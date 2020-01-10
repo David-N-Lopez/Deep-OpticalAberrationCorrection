@@ -1,0 +1,30 @@
+import numpy as np
+from string import Template
+import time
+
+def nmToterm(n, m):
+    if (n == 0):
+        return 0
+    else:
+        return (m + n) // 2 + 1 + nmToterm(n - 1, n - 1)
+
+num_of_orders = 27
+
+first_template = Template("D:\\zernike\\zernike_polynomials\\high_res-n=$n")
+second_template = Template("&m=$m")
+third_string = ".npy"
+forth_string = "_half.npy"
+
+for n in range(1, num_of_orders + 1, 1):
+    for m in range(-n, n + 2, 2):
+        term = nmToterm(n, m) - 1
+        first_string = first_template.substitute(n = str(n))
+        second_string = second_template.substitute(m = str(m))
+        filename = first_string + second_string + third_string
+        #filename = "D:\\zernike\\zernike_coefficients\\zernike_coefficients_batch_"+str(batch)+".npy"
+        file = np.load(filename)
+        #filename1 = "D:\\zernike\\zernike_coefficients\\zernike_coefficients_batch_"+str(batch)+"_half.npy"
+        filename1 = first_string + second_string + forth_string
+        file = file[::2,::2]
+        np.save(filename1, file)
+        print(term)
